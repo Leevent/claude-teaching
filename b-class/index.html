@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>B 班｜Claude 應用講座 — Skill 與跨平台 MCP 實踐</title>
+  <meta name="description" content="用 Skill 封裝你的工作 SOP，用 MCP 讓 Claude 串接你的日常工具，打造個人 AI 工作系統。3 小時線上直播，不需要寫程式。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #FFF8F0;
+      --bg-alt: #FDF3E7;
+      --bg-card: #FFFFFF;
+      --bg-dark: #1E1A15;
+      --accent: #D4764E;
+      --accent-light: #E8A87C;
+      --accent-gold: #D4A574;
+      --accent-blue: #4A7FBB;
+      --accent-blue-light: #6B9DD4;
+      --accent-green: #6BAF7B;
+      --accent-purple: #8B6BB5;
+      --text: #2D2016;
+      --text-sec: #6B5B4E;
+      --text-muted: #9B8B7E;
+      --text-on-dark: #F5EDE5;
+      --border: #E8DDD4;
+      --shadow: rgba(45, 32, 22, 0.08);
+      --shadow-lg: rgba(45, 32, 22, 0.12);
+      --radius: 16px;
+      --radius-sm: 12px;
+      --radius-xs: 8px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      font-family: 'Noto Sans TC', 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── Navigation ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255, 248, 240, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      transition: var(--transition);
+    }
+    .nav.scrolled { box-shadow: 0 2px 20px var(--shadow); }
+    .nav-inner {
+      max-width: 1080px; margin: 0 auto;
+      padding: 12px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand {
+      font-weight: 700; font-size: 0.95rem; color: var(--accent);
+      text-decoration: none; display: flex; align-items: center; gap: 8px;
+    }
+    .nav-brand span { font-size: 1.2rem; }
+    .nav-links { display: flex; gap: 4px; }
+    .nav-links a {
+      color: var(--text-sec); text-decoration: none; font-size: 0.85rem;
+      padding: 6px 12px; border-radius: 8px; transition: var(--transition);
+      font-weight: 500;
+    }
+    .nav-links a:hover { background: var(--bg-alt); color: var(--accent); }
+    .nav-cta {
+      background: var(--accent); color: #fff !important; border-radius: 999px !important;
+      padding: 8px 20px !important; font-weight: 700 !important;
+    }
+    .nav-cta:hover { background: #C06A45 !important; transform: translateY(-1px); }
+    .nav-mobile-toggle { display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text); }
+
+    /* ── Container ── */
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+    .section { padding: 80px 0; }
+    .section-alt { background: var(--bg-alt); }
+    .section-dark { background: var(--bg-dark); color: var(--text-on-dark); }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 140px 0 80px;
+      background: linear-gradient(135deg, #FFF8F0 0%, #FDF3E7 50%, #F8E8D6 100%);
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: -50%; right: -20%;
+      width: 600px; height: 600px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(212,118,78,0.08) 0%, transparent 70%);
+    }
+    .hero::after {
+      content: ''; position: absolute; bottom: -30%; left: -10%;
+      width: 400px; height: 400px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(74,127,187,0.06) 0%, transparent 70%);
+    }
+    .hero-inner {
+      max-width: 1080px; margin: 0 auto; padding: 0 24px;
+      position: relative; z-index: 1;
+      display: grid; grid-template-columns: 1fr 380px; gap: 48px; align-items: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(212,118,78,0.1); color: var(--accent);
+      padding: 6px 16px; border-radius: 999px; font-size: 0.85rem; font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .hero h1 { font-size: 2.5rem; font-weight: 900; line-height: 1.3; margin-bottom: 16px; }
+    .hero h1 .highlight { color: var(--accent); }
+    .hero .subtitle { font-size: 1.15rem; color: var(--text-sec); margin-bottom: 32px; line-height: 1.8; }
+    .hero-meta {
+      display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 32px;
+    }
+    .hero-meta-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.95rem; color: var(--text-sec);
+    }
+    .hero-meta-item .icon { font-size: 1.2rem; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* Hero info card */
+    .hero-card {
+      background: var(--bg-card); border-radius: var(--radius); padding: 32px;
+      box-shadow: 0 8px 32px var(--shadow-lg);
+      border: 1px solid var(--border);
+    }
+    .hero-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; }
+    .hero-card-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 0; border-bottom: 1px solid var(--border);
+    }
+    .hero-card-row:last-child { border-bottom: none; }
+    .hero-card-label { color: var(--text-muted); font-size: 0.9rem; }
+    .hero-card-value { font-weight: 700; font-size: 0.95rem; }
+    .hero-card-price {
+      text-align: center; margin-top: 20px; padding-top: 20px;
+      border-top: 2px solid var(--accent);
+    }
+    .hero-card-price .price { font-size: 2rem; font-weight: 900; color: var(--accent); }
+    .hero-card-price .note { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      border: none; border-radius: 999px; font-family: inherit; cursor: pointer;
+      font-weight: 700; transition: var(--transition); text-decoration: none;
+    }
+    .btn-primary {
+      background: var(--accent); color: #fff;
+      padding: 16px 36px; font-size: 1.05rem;
+      box-shadow: 0 4px 16px rgba(212,118,78,0.3);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(212,118,78,0.4); }
+    .btn-secondary {
+      background: transparent; color: var(--accent);
+      padding: 14px 32px; font-size: 1rem;
+      border: 2px solid var(--accent);
+    }
+    .btn-secondary:hover { background: rgba(212,118,78,0.08); }
+
+    /* ── Section Headers ── */
+    .section-header { text-align: center; margin-bottom: 48px; }
+    .section-header .overline {
+      font-size: 0.85rem; font-weight: 700; color: var(--accent);
+      text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px;
+    }
+    .section-header h2 { font-size: 2rem; font-weight: 900; line-height: 1.4; margin-bottom: 12px; }
+    .section-header p { font-size: 1.05rem; color: var(--text-sec); max-width: 640px; margin: 0 auto; }
+    .section-dark .section-header p { color: rgba(245,237,229,0.7); }
+
+    /* ── Feature Cards ── */
+    .features-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .feature-card {
+      background: var(--bg-card); border-radius: var(--radius); padding: 28px;
+      border: 1px solid var(--border); transition: var(--transition);
+      cursor: default;
+    }
+    .feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px var(--shadow-lg); }
+    .feature-icon {
+      width: 52px; height: 52px; border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; margin-bottom: 16px;
+    }
+    .feature-icon.skill { background: rgba(212,118,78,0.1); }
+    .feature-icon.mcp { background: rgba(74,127,187,0.1); }
+    .feature-icon.system { background: rgba(107,175,123,0.1); }
+    .feature-icon.prompt { background: rgba(139,107,181,0.1); }
+    .feature-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
+    .feature-card p { font-size: 0.9rem; color: var(--text-sec); line-height: 1.6; }
+
+    /* ── Course Map (Timeline) ── */
+    .timeline { max-width: 720px; margin: 0 auto; }
+    .timeline-item {
+      display: grid; grid-template-columns: 80px 1fr; gap: 24px;
+      position: relative; padding-bottom: 32px;
+    }
+    .timeline-item::before {
+      content: ''; position: absolute; left: 39px; top: 56px;
+      bottom: 0; width: 2px; background: var(--border);
+    }
+    .timeline-item:last-child::before { display: none; }
+    .timeline-marker {
+      width: 80px; height: 48px; border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 0.85rem; color: #fff;
+      position: relative; z-index: 1;
+    }
+    .timeline-content {
+      background: var(--bg-card); border-radius: var(--radius); padding: 24px;
+      border: 1px solid var(--border); transition: var(--transition); cursor: pointer;
+    }
+    .timeline-content:hover { box-shadow: 0 4px 16px var(--shadow); }
+    .timeline-content h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; }
+    .timeline-content .time { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; }
+    .timeline-content .details {
+      max-height: 0; overflow: hidden; transition: max-height 0.4s ease;
+    }
+    .timeline-content.open .details { max-height: 600px; }
+    .timeline-content .details ul {
+      list-style: none; padding-top: 12px; border-top: 1px solid var(--border);
+    }
+    .timeline-content .details li {
+      padding: 6px 0; font-size: 0.9rem; color: var(--text-sec);
+      display: flex; align-items: flex-start; gap: 8px;
+    }
+    .timeline-content .details li::before { content: '→'; color: var(--accent); flex-shrink: 0; }
+    .timeline-toggle {
+      font-size: 0.85rem; color: var(--accent); cursor: pointer;
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+
+    /* ── Skill Workshop ── */
+    .workshop { max-width: 720px; margin: 0 auto; }
+    .workshop-steps {
+      display: flex; gap: 4px; margin-bottom: 32px;
+      background: var(--bg-alt); border-radius: var(--radius); padding: 4px;
+    }
+    .workshop-step-tab {
+      flex: 1; padding: 12px 8px; text-align: center; border-radius: var(--radius-sm);
+      font-size: 0.8rem; font-weight: 700; color: var(--text-muted);
+      cursor: pointer; transition: var(--transition); border: none; background: none;
+      font-family: inherit;
+    }
+    .workshop-step-tab.active {
+      background: var(--bg-card); color: var(--accent);
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+    .workshop-step-tab .step-num {
+      display: block; font-size: 1.1rem; margin-bottom: 2px;
+    }
+    .workshop-panel {
+      background: var(--bg-card); border-radius: var(--radius); padding: 32px;
+      border: 1px solid var(--border); display: none;
+      animation: fadeUp 0.3s ease;
+    }
+    .workshop-panel.active { display: block; }
+    .workshop-panel h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+    .workshop-panel .hint { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px; }
+    .workshop-panel label {
+      display: block; font-size: 0.9rem; font-weight: 500; margin-bottom: 6px; color: var(--text-sec);
+    }
+    .workshop-panel textarea, .workshop-panel input[type="text"], .workshop-panel select {
+      width: 100%; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: var(--radius-xs);
+      font-family: inherit; font-size: 0.95rem; color: var(--text);
+      background: var(--bg); transition: var(--transition); resize: vertical;
+    }
+    .workshop-panel textarea:focus, .workshop-panel input:focus, .workshop-panel select:focus {
+      outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(212,118,78,0.1);
+    }
+    .workshop-panel textarea { min-height: 80px; }
+    .field-group { margin-bottom: 16px; }
+    .field-example { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; font-style: italic; }
+    .workshop-nav { display: flex; justify-content: space-between; margin-top: 24px; }
+    .btn-step {
+      padding: 10px 24px; border-radius: 999px; font-family: inherit; font-weight: 700;
+      font-size: 0.9rem; cursor: pointer; transition: var(--transition); border: none;
+    }
+    .btn-step-next { background: var(--accent); color: #fff; }
+    .btn-step-next:hover { background: #C06A45; }
+    .btn-step-prev { background: var(--bg-alt); color: var(--text-sec); }
+    .btn-step-prev:hover { background: var(--border); }
+
+    /* Skill Preview */
+    .skill-preview {
+      background: var(--bg-dark); color: var(--text-on-dark);
+      border-radius: var(--radius); padding: 24px; margin-top: 20px;
+      font-family: 'Courier New', monospace; font-size: 0.85rem;
+      line-height: 1.8; white-space: pre-wrap; position: relative;
+    }
+    .skill-preview .copy-btn {
+      position: absolute; top: 12px; right: 12px;
+      background: rgba(255,255,255,0.1); color: var(--text-on-dark);
+      border: none; border-radius: 8px; padding: 6px 14px;
+      font-size: 0.8rem; cursor: pointer; font-family: 'Noto Sans TC', sans-serif;
+      transition: var(--transition);
+    }
+    .skill-preview .copy-btn:hover { background: rgba(255,255,255,0.2); }
+
+    /* ── MCP Guide ── */
+    .mcp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .mcp-card {
+      background: var(--bg-card); border-radius: var(--radius); padding: 28px;
+      border: 1px solid var(--border); transition: var(--transition);
+      cursor: pointer; position: relative; overflow: hidden;
+    }
+    .mcp-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: var(--accent-blue); opacity: 0; transition: var(--transition);
+    }
+    .mcp-card:hover::before { opacity: 1; }
+    .mcp-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px var(--shadow); }
+    .mcp-card-icon { font-size: 2rem; margin-bottom: 12px; }
+    .mcp-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    .mcp-card p { font-size: 0.9rem; color: var(--text-sec); margin-bottom: 16px; }
+    .mcp-steps { display: none; padding-top: 16px; border-top: 1px solid var(--border); }
+    .mcp-card.expanded .mcp-steps { display: block; }
+    .mcp-step-item {
+      display: flex; gap: 12px; padding: 10px 0;
+      font-size: 0.88rem; color: var(--text-sec);
+    }
+    .mcp-step-num {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--accent-blue); color: #fff; font-size: 0.75rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-weight: 700;
+    }
+    .mcp-expand-hint { font-size: 0.8rem; color: var(--accent-blue); font-weight: 500; }
+
+    /* ── System Canvas ── */
+    .canvas-container { max-width: 720px; margin: 0 auto; }
+    .canvas-board {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px;
+    }
+    .canvas-col {
+      background: var(--bg-card); border-radius: var(--radius); padding: 20px;
+      border: 1px solid var(--border); min-height: 280px;
+    }
+    .canvas-col-header {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
+      padding-bottom: 12px; border-bottom: 2px solid;
+    }
+    .canvas-col-header h3 { font-size: 0.95rem; font-weight: 700; }
+    .canvas-col-header .col-icon { font-size: 1.2rem; }
+    .canvas-col[data-type="projects"] .canvas-col-header { border-color: var(--accent-gold); }
+    .canvas-col[data-type="skills"] .canvas-col-header { border-color: var(--accent); }
+    .canvas-col[data-type="mcp"] .canvas-col-header { border-color: var(--accent-blue); }
+    .canvas-item {
+      background: var(--bg-alt); border-radius: var(--radius-xs); padding: 10px 14px;
+      margin-bottom: 8px; font-size: 0.88rem; display: flex; align-items: center;
+      justify-content: space-between; transition: var(--transition);
+    }
+    .canvas-item:hover { background: var(--border); }
+    .canvas-remove {
+      background: none; border: none; color: var(--text-muted);
+      cursor: pointer; font-size: 1rem; padding: 0 4px;
+    }
+    .canvas-remove:hover { color: #D44; }
+    .canvas-add {
+      display: flex; gap: 8px; margin-top: 12px;
+    }
+    .canvas-add input {
+      flex: 1; padding: 8px 12px; border: 1.5px solid var(--border);
+      border-radius: var(--radius-xs); font-family: inherit; font-size: 0.85rem;
+      background: var(--bg); color: var(--text);
+    }
+    .canvas-add input:focus { outline: none; border-color: var(--accent); }
+    .canvas-add-btn {
+      background: var(--accent); color: #fff; border: none;
+      border-radius: var(--radius-xs); padding: 8px 14px; cursor: pointer;
+      font-size: 0.85rem; font-weight: 700; font-family: inherit;
+      transition: var(--transition);
+    }
+    .canvas-add-btn:hover { background: #C06A45; }
+    .canvas-connections {
+      background: var(--bg-card); border-radius: var(--radius); padding: 24px;
+      border: 1px solid var(--border); text-align: center;
+    }
+    .canvas-connections h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 12px; }
+    .canvas-connections p { font-size: 0.9rem; color: var(--text-sec); }
+    .canvas-flow {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      margin-top: 16px; flex-wrap: wrap;
+    }
+    .canvas-flow-item {
+      background: var(--bg-alt); padding: 8px 16px; border-radius: 999px;
+      font-size: 0.85rem; font-weight: 500;
+    }
+    .canvas-flow-arrow { color: var(--accent); font-weight: 700; }
+
+    /* ── Maturity Model ── */
+    .maturity { max-width: 720px; margin: 0 auto; }
+    .maturity-levels { display: flex; flex-direction: column; gap: 12px; }
+    .maturity-level {
+      display: grid; grid-template-columns: 48px 1fr; gap: 16px; align-items: center;
+      background: var(--bg-card); border-radius: var(--radius-sm); padding: 16px 20px;
+      border: 1px solid var(--border); cursor: pointer; transition: var(--transition);
+    }
+    .maturity-level:hover { border-color: var(--accent-gold); }
+    .maturity-level.active { border-color: var(--accent); box-shadow: 0 4px 16px var(--shadow); }
+    .maturity-badge {
+      width: 48px; height: 48px; border-radius: 12px; display: flex;
+      align-items: center; justify-content: center; font-weight: 900;
+      font-size: 1.1rem; color: #fff;
+    }
+    .maturity-level:nth-child(1) .maturity-badge { background: #7EADD2; }
+    .maturity-level:nth-child(2) .maturity-badge { background: #6BAF7B; }
+    .maturity-level:nth-child(3) .maturity-badge { background: var(--accent-gold); }
+    .maturity-level:nth-child(4) .maturity-badge { background: var(--accent); }
+    .maturity-level:nth-child(5) .maturity-badge { background: var(--accent-purple); }
+    .maturity-title { font-weight: 700; font-size: 0.95rem; }
+    .maturity-desc {
+      font-size: 0.85rem; color: var(--text-sec);
+      max-height: 0; overflow: hidden; transition: max-height 0.3s ease;
+      grid-column: 1 / -1;
+    }
+    .maturity-level.active .maturity-desc { max-height: 200px; padding-top: 12px; }
+
+    /* ── FAQ ── */
+    .faq { max-width: 720px; margin: 0 auto; }
+    .faq-item {
+      border-bottom: 1px solid var(--border); padding: 20px 0; cursor: pointer;
+    }
+    .faq-question {
+      display: flex; justify-content: space-between; align-items: center;
+      font-weight: 700; font-size: 1rem;
+    }
+    .faq-arrow { transition: transform 0.3s ease; font-size: 1.2rem; color: var(--text-muted); }
+    .faq-item.open .faq-arrow { transform: rotate(180deg); }
+    .faq-answer {
+      max-height: 0; overflow: hidden; transition: max-height 0.4s ease;
+      font-size: 0.95rem; color: var(--text-sec); line-height: 1.7;
+    }
+    .faq-item.open .faq-answer { max-height: 300px; padding-top: 12px; }
+
+    /* ── Audience ── */
+    .audience-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 720px; margin: 0 auto; }
+    .audience-card {
+      background: var(--bg-card); border-radius: var(--radius); padding: 28px;
+      border: 1px solid var(--border);
+    }
+    .audience-card.yes { border-left: 4px solid var(--accent-green); }
+    .audience-card.no { border-left: 4px solid var(--text-muted); }
+    .audience-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .audience-card ul { list-style: none; }
+    .audience-card li { padding: 6px 0; font-size: 0.9rem; color: var(--text-sec); display: flex; gap: 8px; align-items: flex-start; }
+
+    /* ── Instructor ── */
+    .instructor-card {
+      max-width: 720px; margin: 0 auto;
+      background: var(--bg-card); border-radius: var(--radius); padding: 40px;
+      border: 1px solid var(--border);
+      display: grid; grid-template-columns: 100px 1fr; gap: 28px; align-items: start;
+    }
+    .instructor-avatar {
+      width: 100px; height: 100px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-gold));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.5rem; color: #fff;
+    }
+    .instructor-card h3 { font-size: 1.3rem; font-weight: 900; margin-bottom: 8px; }
+    .instructor-card .role { color: var(--accent); font-weight: 700; font-size: 0.9rem; margin-bottom: 12px; }
+    .instructor-card p { font-size: 0.95rem; color: var(--text-sec); line-height: 1.7; }
+    .instructor-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .instructor-tag {
+      background: var(--bg-alt); padding: 4px 12px; border-radius: 999px;
+      font-size: 0.8rem; color: var(--text-sec);
+    }
+
+    /* ── CTA ── */
+    .cta-section { text-align: center; padding: 80px 0; }
+    .cta-section h2 { font-size: 2rem; font-weight: 900; margin-bottom: 12px; }
+    .cta-section p { font-size: 1.05rem; color: var(--text-sec); margin-bottom: 32px; }
+    .section-dark .cta-section p { color: rgba(245,237,229,0.7); }
+
+    /* ── Footer ── */
+    .footer {
+      padding: 32px 0; text-align: center;
+      font-size: 0.85rem; color: var(--text-muted);
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 1.8rem; }
+      .hero-card { order: -1; }
+      .features-grid { grid-template-columns: repeat(2, 1fr); }
+      .mcp-grid { grid-template-columns: 1fr; }
+      .canvas-board { grid-template-columns: 1fr; }
+      .audience-grid { grid-template-columns: 1fr; }
+      .instructor-card { grid-template-columns: 1fr; text-align: center; }
+      .instructor-avatar { margin: 0 auto; }
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex; flex-direction: column; position: absolute;
+        top: 100%; left: 0; right: 0; background: var(--bg);
+        padding: 16px; border-bottom: 1px solid var(--border);
+        box-shadow: 0 8px 24px var(--shadow);
+      }
+      .nav-mobile-toggle { display: block; }
+      .timeline-item { grid-template-columns: 60px 1fr; gap: 16px; }
+      .workshop-steps { overflow-x: auto; }
+      .workshop-step-tab { min-width: 70px; }
+    }
+    @media (max-width: 480px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .hero { padding: 120px 0 60px; }
+      .section { padding: 60px 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-brand"><span>🧩</span> B 班 | Skill & MCP</a>
+      <button class="nav-mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
+      <div class="nav-links">
+        <a href="#map">課程地圖</a>
+        <a href="#workshop">Skill 工坊</a>
+        <a href="#mcp">MCP 指南</a>
+        <a href="#canvas">系統畫布</a>
+        <a href="#faq">FAQ</a>
+        <a href="https://www.accupass.com/go/claude-b-class" class="nav-cta" target="_blank" rel="noopener">立即報名</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-badge">🔥 中高階 — 進階實戰</div>
+        <h1>用 <span class="highlight">Skill</span> 封裝你的工作 SOP<br>用 <span class="highlight">MCP</span> 串接你的世界</h1>
+        <p class="subtitle">從「一個人用 Claude」進化到「Claude 幫你管一整個工作系統」。<br>不需要寫程式，你需要的是設計思維和系統化的方法。</p>
+        <div class="hero-meta">
+          <div class="hero-meta-item"><span class="icon">📅</span> 2026/4/9（四）</div>
+          <div class="hero-meta-item"><span class="icon">🕖</span> 19:00-22:00</div>
+          <div class="hero-meta-item"><span class="icon">💻</span> 線上直播＋回放</div>
+          <div class="hero-meta-item"><span class="icon">🎓</span> 實戰工作坊</div>
+        </div>
+        <div class="hero-actions">
+          <a href="https://www.accupass.com/go/claude-b-class" class="btn btn-primary" target="_blank" rel="noopener">立即報名 →</a>
+          <a href="#map" class="btn btn-secondary">看課程大綱</a>
+        </div>
+      </div>
+      <div class="hero-card">
+        <h3>📋 課程資訊</h3>
+        <div class="hero-card-row">
+          <span class="hero-card-label">課程名稱</span>
+          <span class="hero-card-value">Skill 與跨平台 MCP 實踐</span>
+        </div>
+        <div class="hero-card-row">
+          <span class="hero-card-label">時長</span>
+          <span class="hero-card-value">3 小時</span>
+        </div>
+        <div class="hero-card-row">
+          <span class="hero-card-label">形式</span>
+          <span class="hero-card-value">線上直播（有回放）</span>
+        </div>
+        <div class="hero-card-row">
+          <span class="hero-card-label">直播平台</span>
+          <span class="hero-card-value">Google Meet</span>
+        </div>
+        <div class="hero-card-row">
+          <span class="hero-card-label">前置條件</span>
+          <span class="hero-card-value">熟悉 Projects & Artifacts</span>
+        </div>
+        <div class="hero-card-row">
+          <span class="hero-card-label">MCP 串接</span>
+          <span class="hero-card-value">需 Claude 桌面版 App</span>
+        </div>
+        <div class="hero-card-price">
+          <div class="price">$500</div>
+          <div class="note">含課後錄影回放（保留 14 天）</div>
+          <div class="note" style="margin-top: 8px; color: var(--accent); font-weight: 500;">= 3 小時實戰 + Skill 模板 + MCP 設定指南 + 系統畫布</div>
+        </div>
+        <div style="margin-top: 16px; padding: 12px 16px; background: rgba(107,175,123,0.08); border-radius: var(--radius-xs); font-size: 0.82rem; color: var(--text-sec); line-height: 1.6;">
+          💡 A 班 25 位學員參與，課後好評回饋：「終於知道怎麼跟 Claude 溝通了」「回去馬上用在工作上」
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What You'll Learn -->
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="overline">What You'll Learn</div>
+        <h2>這堂課帶你從使用者升級為設計者</h2>
+        <p>四大核心模組，每一個都有實戰練習，學完直接帶走用</p>
+      </div>
+      <div class="features-grid fade-in">
+        <div class="feature-card">
+          <div class="feature-icon skill">🧩</div>
+          <h3>Skill 設計</h3>
+          <p>把你的專業知識封裝成可重複執行的 AI 工作 SOP，一鍵觸發完整流程</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon mcp">🔗</div>
+          <h3>MCP 跨平台串接</h3>
+          <p>讓 Claude 連上 Google Calendar、Notion、試算表，直接操作你的日常工具</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon system">⚙️</div>
+          <h3>工作系統設計</h3>
+          <p>Projects × Skills × MCP 的三角關係，打造你的 AI 工作流系統</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon prompt">🧠</div>
+          <h3>進階 Prompt 工程</h3>
+          <p>Chain-of-Thought、Few-shot、Extended Thinking——讓產出品質再跳一級</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Course Map -->
+  <section class="section section-alt" id="map">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="overline">Course Map</div>
+        <h2>3 小時課程地圖</h2>
+        <p>點擊各 Part 展開詳細內容</p>
+      </div>
+      <div class="timeline fade-in">
+        <div class="timeline-item">
+          <div class="timeline-marker" style="background: var(--accent-gold);">P1</div>
+          <div class="timeline-content" onclick="toggleTimeline(this)">
+            <h3>從使用者到設計者 — 思維轉換</h3>
+            <div class="time">20 min</div>
+            <span class="timeline-toggle">展開詳情 ▾</span>
+            <div class="details">
+              <ul>
+                <li>A 班回顧：五元素框架 R-T-C-F-Q + E 快速複習</li>
+                <li>Project vs Skill 關鍵差異（從「記住」到「執行」）</li>
+                <li>Connectors → MCP 概念橋接：「A 班是學開車，今天是學看引擎」</li>
+                <li>Extended Thinking：什麼時候該讓 Claude「想久一點」</li>
+                <li>Styles：自訂回應風格，統一品牌語氣</li>
+                <li>模型選擇策略：Haiku / Sonnet / Opus 成本 × 效能矩陣</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker" style="background: var(--accent);">P2</div>
+          <div class="timeline-content" onclick="toggleTimeline(this)">
+            <h3>Skill 設計 — 把你的專業封裝起來</h3>
+            <div class="time">50 min ｜ 核心實戰</div>
+            <span class="timeline-toggle">展開詳情 ▾</span>
+            <div class="details">
+              <ul>
+                <li>Skill = 你的「AI 工作 SOP」，從手動重複到一鍵執行</li>
+                <li>Skill 設計框架：觸發 → 輸入 → 執行 → 輸出 → 品質護欄</li>
+                <li>5 級 Skill 成熟度模型：結構化提示 → 多步驟 → 編排調度</li>
+                <li>實戰工作坊：社群貼文 Skill / 會議紀錄 Skill / 行銷一條龍 Skill</li>
+                <li>Anthropic 官方設計模式：Red Line Rules、Data Hierarchy、Step-by-step Verification</li>
+                <li>Skill 的迭代與優化：根據使用回饋調整</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker" style="background: var(--accent-blue);">P3</div>
+          <div class="timeline-content" onclick="toggleTimeline(this)">
+            <h3>MCP 跨平台串接 — 讓 Claude 連上你的世界</h3>
+            <div class="time">50 min ｜ 核心實戰</div>
+            <span class="timeline-toggle">展開詳情 ▾</span>
+            <div class="details">
+              <ul>
+                <li>MCP（Model Context Protocol）白話解說</li>
+                <li>MCP vs n8n / Zapier — 不是替代，是互補</li>
+                <li>實戰串接 Demo（每個都帶設定步驟）：</li>
+                <li>Google Calendar：讓 Claude 看你的行程、安排時間</li>
+                <li>Notion：讓 Claude 讀寫你的知識庫</li>
+                <li>Google Sheets：讓 Claude 直接操作你的表格</li>
+                <li>使用場景設計：每日工作啟動流、資料分析流、內容發布流</li>
+                <li>MCP 安全與限制：權限管理與常見問題排除</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker" style="background: var(--accent-green);">P4</div>
+          <div class="timeline-content" onclick="toggleTimeline(this)">
+            <h3>工作系統設計 — 串起來的力量</h3>
+            <div class="time">35 min</div>
+            <span class="timeline-toggle">展開詳情 ▾</span>
+            <div class="details">
+              <ul>
+                <li>Projects × Skills × MCP 的三角關係</li>
+                <li>從「使用者」到「AI 工作流設計師」的角色轉變</li>
+                <li>真實案例：我的 AI 工作系統（daily workflow、內容發布流）</li>
+                <li>AI 工作系統設計畫布：盤點高頻工作 → 識別可自動化環節 → 規劃串接順序</li>
+                <li>進階概念預告：SubAgent 與 Multi-Agent</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-marker" style="background: var(--accent-purple);">P5</div>
+          <div class="timeline-content" onclick="toggleTimeline(this)">
+            <h3>Prompt 進階 + Q&A</h3>
+            <div class="time">25 min</div>
+            <span class="timeline-toggle">展開詳情 ▾</span>
+            <div class="details">
+              <ul>
+                <li>Chain-of-Thought：讓 Claude「Show your work」</li>
+                <li>Few-shot Learning：把範例寫進 Skill 裡</li>
+                <li>Meta-prompting：請 Claude 自我評估產出品質</li>
+                <li>Extended Thinking 開啟前後品質對比 Demo</li>
+                <li>開放 Q&A</li>
+                <li>隱藏班預告：30 秒 Vibe Coding Live Demo</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skill Workshop -->
+  <section class="section" id="workshop">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="overline">Interactive Workshop</div>
+        <h2>🧩 Skill 設計工坊</h2>
+        <p>跟著五個步驟，設計出你的第一個 Skill。完成後可直接複製使用。</p>
+        <div style="text-align: center; margin-top: -16px; margin-bottom: 8px;">
+          <button onclick="loadMarketingExample()" style="background: rgba(212,118,78,0.1); color: var(--accent); border: 1px solid rgba(212,118,78,0.3); padding: 8px 20px; border-radius: 999px; font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: var(--transition);">📋 一鍵載入行銷範例</button>
+        </div>
+      </div>
+      <div class="workshop fade-in">
+        <div class="workshop-steps">
+          <button class="workshop-step-tab active" onclick="switchStep(0)">
+            <span class="step-num">①</span>觸發
+          </button>
+          <button class="workshop-step-tab" onclick="switchStep(1)">
+            <span class="step-num">②</span>輸入
+          </button>
+          <button class="workshop-step-tab" onclick="switchStep(2)">
+            <span class="step-num">③</span>流程
+          </button>
+          <button class="workshop-step-tab" onclick="switchStep(3)">
+            <span class="step-num">④</span>輸出
+          </button>
+          <button class="workshop-step-tab" onclick="switchStep(4)">
+            <span class="step-num">⑤</span>護欄
+          </button>
+        </div>
+
+        <!-- Step 1: Trigger -->
+        <div class="workshop-panel active" id="step-0">
+          <h3>① 觸發條件 — 什麼時候啟動這個 Skill？</h3>
+          <p class="hint">想想你工作中哪件事「手動做第三次，就值得做成 Skill」</p>
+          <div class="field-group">
+            <label>Skill 名稱</label>
+            <input type="text" id="skill-name" placeholder="例：社群貼文產出器">
+          </div>
+          <div class="field-group">
+            <label>觸發場景</label>
+            <textarea id="skill-trigger" placeholder="例：當我需要為新產品/活動撰寫多平台社群文案時"></textarea>
+            <div class="field-example">提示：描述一個具體的工作場景，越具體越好</div>
+          </div>
+          <div class="field-group">
+            <label>使用頻率</label>
+            <select id="skill-freq">
+              <option value="">選擇使用頻率</option>
+              <option value="daily">每天</option>
+              <option value="weekly">每週 2-3 次</option>
+              <option value="biweekly">每兩週一次</option>
+              <option value="monthly">每月一次</option>
+            </select>
+          </div>
+          <div class="workshop-nav">
+            <div></div>
+            <button class="btn-step btn-step-next" onclick="switchStep(1)">下一步 →</button>
+          </div>
+        </div>
+
+        <!-- Step 2: Input -->
+        <div class="workshop-panel" id="step-1">
+          <h3>② 輸入規格 — Skill 需要你提供什麼？</h3>
+          <p class="hint">列出 Skill 啟動時需要的資料，越明確越不容易出錯</p>
+          <div class="field-group">
+            <label>必要輸入（每行一項）</label>
+            <textarea id="skill-input-required" placeholder="例：&#10;- 產品/活動名稱&#10;- 目標受眾描述&#10;- 核心賣點（3 個以內）"></textarea>
+          </div>
+          <div class="field-group">
+            <label>選填輸入（有的話更好）</label>
+            <textarea id="skill-input-optional" placeholder="例：&#10;- 品牌語氣參考文件&#10;- 過去的爆款貼文範例&#10;- 競品文案截圖"></textarea>
+          </div>
+          <div class="workshop-nav">
+            <button class="btn-step btn-step-prev" onclick="switchStep(0)">← 上一步</button>
+            <button class="btn-step btn-step-next" onclick="switchStep(2)">下一步 →</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Process -->
+        <div class="workshop-panel" id="step-2">
+          <h3>③ 執行流程 — Step by step 怎麼做？</h3>
+          <p class="hint">把你腦中的工作流程寫下來，Claude 會照著這個順序執行</p>
+          <div class="field-group">
+            <label>執行步驟（每行一個步驟）</label>
+            <textarea id="skill-process" rows="6" placeholder="例：&#10;Step 1：分析目標受眾的痛點與需求&#10;Step 2：提煉 3 個核心訊息角度&#10;Step 3：撰寫 Threads 版本（300 字內，含 CTA）&#10;Step 4：改寫為 Facebook 版本（加入連結和 Hashtag）&#10;Step 5：產出 Instagram 圖文版本（重點條列）"></textarea>
+          </div>
+          <div class="field-group">
+            <label>角色設定（Claude 要扮演什麼角色？）</label>
+            <input type="text" id="skill-role" placeholder="例：資深社群行銷經理，擅長中文口語化文案">
+          </div>
+          <div class="workshop-nav">
+            <button class="btn-step btn-step-prev" onclick="switchStep(1)">← 上一步</button>
+            <button class="btn-step btn-step-next" onclick="switchStep(3)">下一步 →</button>
+          </div>
+        </div>
+
+        <!-- Step 4: Output -->
+        <div class="workshop-panel" id="step-3">
+          <h3>④ 輸出格式 — 最終交付什麼？</h3>
+          <p class="hint">明確定義產出的格式和結構，避免每次結果長得不一樣</p>
+          <div class="field-group">
+            <label>輸出格式描述</label>
+            <textarea id="skill-output" placeholder="例：&#10;## [平台名稱] 版本&#10;&#10;[文案內容]&#10;&#10;---&#10;每個版本獨立分段，包含：&#10;- 主文案&#10;- CTA（行動呼籲）&#10;- 建議發布時間&#10;- Hashtag（3-5 個）"></textarea>
+          </div>
+          <div class="field-group">
+            <label>範例（給 Claude 看的「我滿意的產出長這樣」）</label>
+            <textarea id="skill-example" placeholder="貼上一個你滿意的過去作品，Claude 會學習這個風格和格式"></textarea>
+            <div class="field-example">官方建議：給 3-5 個範例效果最好。這裡先放 1 個核心範例。</div>
+          </div>
+          <div class="workshop-nav">
+            <button class="btn-step btn-step-prev" onclick="switchStep(2)">← 上一步</button>
+            <button class="btn-step btn-step-next" onclick="switchStep(4)">下一步 →</button>
+          </div>
+        </div>
+
+        <!-- Step 5: Quality -->
+        <div class="workshop-panel" id="step-4">
+          <h3>⑤ 品質護欄 — 怎麼確保產出品質？</h3>
+          <p class="hint">Red Line Rules（紅線規則）：告訴 Claude「不做什麼」比「做什麼」更重要</p>
+          <div class="field-group">
+            <label>品質標準（必須達到的條件）</label>
+            <textarea id="skill-quality" placeholder="例：&#10;- 每篇文案必須包含至少一個 CTA&#10;- 語氣親切口語化，不要文言文或公文體&#10;- 字數控制在平台建議範圍內"></textarea>
+          </div>
+          <div class="field-group">
+            <label>紅線規則（絕對不能做的事）</label>
+            <textarea id="skill-redline" placeholder="例：&#10;❌ 不要使用「親愛的」「您好」等制式開頭&#10;❌ 不要一次講超過 3 個賣點&#10;❌ 不要使用競品的品牌名稱&#10;❌ 不要出現未經驗證的數據"></textarea>
+          </div>
+          <div class="workshop-nav">
+            <button class="btn-step btn-step-prev" onclick="switchStep(3)">← 上一步</button>
+            <button class="btn-step btn-step-next" onclick="generateSkill()" style="background: var(--accent-green);">✨ 產出 Skill</button>
+          </div>
+          <div id="skill-result"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MCP Guide -->
+  <section class="section section-alt" id="mcp">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="overline">MCP Connection Guide</div>
+        <h2>🔗 MCP 串接指南</h2>
+        <p>課堂上會帶你實戰串接這三個工具，點擊卡片預覽步驟</p>
+      </div>
+      <div class="mcp-grid fade-in">
+        <div class="mcp-card" onclick="toggleMcp(this)">
+          <div class="mcp-card-icon">📅</div>
+          <h3>Google Calendar</h3>
+          <p>讓 Claude 看你的行程、安排時間、提醒你重要會議</p>
+          <span class="mcp-expand-hint">點擊查看串接步驟 →</span>
+          <div class="mcp-steps">
+            <div class="mcp-step-item"><div class="mcp-step-num">1</div><div>開啟 Claude 桌面版 Settings → Integrations</div></div>
+            <div class="mcp-step-item"><div class="mcp-step-num">2</div><div>找到 Google Calendar，點擊 Connect（官方整合，一鍵授權）</div></div>
+            <div class="mcp-step-item"><div class="mcp-step-num">3</div><div>Google 帳號授權（選擇要分享的日曆）</div></div>
+            <div class="mcp-step-item"><div class="mcp-step-num">4</div><div>測試：問 Claude「我明天有什麼行程？」</div></div>
+            <div class="mcp-step-item"><div class="mcp-step-num">5</div><div>進階：讓 Claude 幫你找空檔、建立新事件</div></div>
+            <div style="margin-top: 8px; font-size: 0.78rem; color: var(--text-muted); padding: 8px; background: rgba(107,175,123,0.06); border-radius: 6px;">🔒 權限為授權範圍內的唯讀/讀寫，Claude 不儲存你的日曆資料</div>
+          </div>
+        </div>
+        <div class="mcp-card" onclick="toggleMcp(this)">
+          <div class="mcp-card-icon">📝</div>
+          <h3>Notion</h3>
+          <p>讓 Claude 讀寫你的知識庫，直接在 Notion 建立頁面和資料庫</p>
+          <span class="mcp-expand-hint">點擊查看串接步驟 →</span>
+          <div class="mcp-steps">
+            <div class="mcp-step-item"><div class="mcp-step-num">1</div><div>開啟 Claude 桌面版 Settings → Integrations</div></div>
+            <div class="mcp-step-item"><div class="mcp-step-num">2</div><div>找到 Notion，點擊 Connect（官方整合，一鍵授權）</div></div>
+            <div class="mcp-step-item"><div class="mcp-step-num">3</div><div>Notion 授權（選擇要分享的工作區和頁面）</div></div>
+            <div class="mcp-step-item"><div class="mcp-step-num">4</div><div>測試：問 Claude「幫我在 Notion 建一個會議紀錄」</div></div>
+            <div class="mcp-step-item"><div class="mcp-step-num">5</div><div>進階：搭配 Skill 自動整理筆記到指定資料庫</div></div>
+            <div style="margin-top: 8px; font-size: 0.78rem; color: var(--text-muted); padding: 8px; background: rgba(107,175,123,0.06); border-radius: 6px;">🔒 僅存取你授權的頁面，不會碰其他工作區內容</div>
+          </div>
+        </div>
+        <div class="mcp-card" onclick="toggleMcp(this)">
+          <div class="mcp-card-icon">📊</div>
+          <h3>Google Sheets</h3>
+          <p>讓 Claude 直接操作你的試算表，分析資料、生成報表</p>
+          <span class="mcp-expand-hint">點擊查看串接步驟 →</span>
+          <div class="mcp-steps">
+            <div class="mcp-step-item"><div class="mcp-step-num">1</div><div>此工具需透過第三方 MCP Server 串接（非官方一鍵整合）</div></div>
+            <div class="mcp-step-item"><div class="mcp-step-num">2</div><div>課堂上會一步步帶你設定 config.json（不需要寫程式）</div></div>
+            <div class="mcp-step-item"><div class="mcp-step-num">3</div><div>Google 帳號授權（選擇要分享的試算表）</div></div>
+            <div class="mcp-step-item"><div class="mcp-step-num">4</div><div>測試：問 Claude「幫我分析這張表的銷售趨勢」</div></div>
+            <div class="mcp-step-item"><div class="mcp-step-num">5</div><div>進階：自動產生月報表、資料視覺化</div></div>
+            <div style="margin-top: 8px; font-size: 0.78rem; color: var(--text-muted); padding: 8px; background: rgba(212,118,78,0.06); border-radius: 6px;">⚙️ 與 Calendar/Notion 不同，Sheets 需要額外設定 MCP Server，課堂上完整示範</div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 32px;">
+        <p style="font-size: 0.9rem; color: var(--text-muted);">
+          💡 MCP = Claude 的「手和眼」（即時互動） ｜ n8n/Zapier = 排程自動化（背景運行）<br>
+          不是替代關係，是互補：MCP 做臨時決策，n8n 做重複排程
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skill Maturity Model -->
+  <section class="section" id="maturity">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="overline">Skill Maturity Model</div>
+        <h2>📈 5 級 Skill 成熟度</h2>
+        <p>你目前在哪個等級？這堂課帶你從 L1 走到 L3-L4</p>
+      </div>
+      <div class="maturity fade-in">
+        <div class="maturity-levels">
+          <div class="maturity-level active" onclick="toggleMaturity(this)">
+            <div class="maturity-badge">L1</div>
+            <div class="maturity-title">結構化提示 Structured Prompt</div>
+            <div class="maturity-desc">用五元素框架（R-T-C-F-Q）寫出清楚的指令。這是 A 班教的基礎功，大多數人停在這裡。每次都要重新寫 prompt，無法複用。</div>
+          </div>
+          <div class="maturity-level" onclick="toggleMaturity(this)">
+            <div class="maturity-badge">L2</div>
+            <div class="maturity-title">動態提示 Dynamic Prompt</div>
+            <div class="maturity-desc">加入變數和條件判斷，同一個 Skill 能適應不同情境。例如：根據「產品類型」自動切換不同的文案風格和平台格式。</div>
+          </div>
+          <div class="maturity-level" onclick="toggleMaturity(this)">
+            <div class="maturity-badge">L3</div>
+            <div class="maturity-title">工具調用 Tool Calling</div>
+            <div class="maturity-desc">Skill 能透過 MCP 呼叫外部工具：讀你的 Calendar、查 Notion、操作 Sheets。從「純文字產出」進化到「連接真實世界」。</div>
+          </div>
+          <div class="maturity-level" onclick="toggleMaturity(this)">
+            <div class="maturity-badge">L4</div>
+            <div class="maturity-title">多步驟 Multi-step</div>
+            <div class="maturity-desc">Skill 自動串起多個步驟：先蒐集資料 → 分析趨勢 → 撰寫報告 → 推送到指定位置。每一步的輸出成為下一步的輸入。</div>
+          </div>
+          <div class="maturity-level" onclick="toggleMaturity(this)">
+            <div class="maturity-badge">L5</div>
+            <div class="maturity-title">編排調度 Orchestration</div>
+            <div class="maturity-desc">多個 Skill 協作、SubAgent 並行處理。一個指令拆分給多個 Agent：一個做競品分析、一個寫文案、一個做 SEO 優化。這是隱藏班的領域。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- System Canvas -->
+  <section class="section section-alt" id="canvas">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="overline">System Design Canvas</div>
+        <h2>⚙️ AI 工作系統設計畫布</h2>
+        <p>盤點你的工作流，找出可以用 Projects、Skills、MCP 優化的環節</p>
+      </div>
+      <div class="canvas-container fade-in">
+        <div class="canvas-board">
+          <div class="canvas-col" data-type="projects">
+            <div class="canvas-col-header">
+              <span class="col-icon">📁</span>
+              <h3>Projects</h3>
+            </div>
+            <div id="projects-list">
+              <div class="canvas-item">社群小編 <button class="canvas-remove" onclick="removeItem(this)">×</button></div>
+              <div class="canvas-item">客戶提案 <button class="canvas-remove" onclick="removeItem(this)">×</button></div>
+            </div>
+            <div class="canvas-add">
+              <input type="text" placeholder="新增 Project..." onkeydown="if(event.key==='Enter')addItem(this,'projects-list')">
+              <button class="canvas-add-btn" onclick="addItem(this.previousElementSibling,'projects-list')">+</button>
+            </div>
+          </div>
+          <div class="canvas-col" data-type="skills">
+            <div class="canvas-col-header">
+              <span class="col-icon">🧩</span>
+              <h3>Skills</h3>
+            </div>
+            <div id="skills-list">
+              <div class="canvas-item">貼文產出器 <button class="canvas-remove" onclick="removeItem(this)">×</button></div>
+              <div class="canvas-item">會議紀錄整理 <button class="canvas-remove" onclick="removeItem(this)">×</button></div>
+            </div>
+            <div class="canvas-add">
+              <input type="text" placeholder="新增 Skill..." onkeydown="if(event.key==='Enter')addItem(this,'skills-list')">
+              <button class="canvas-add-btn" onclick="addItem(this.previousElementSibling,'skills-list')">+</button>
+            </div>
+          </div>
+          <div class="canvas-col" data-type="mcp">
+            <div class="canvas-col-header">
+              <span class="col-icon">🔗</span>
+              <h3>MCP 連接</h3>
+            </div>
+            <div id="mcp-list">
+              <div class="canvas-item">Google Calendar <button class="canvas-remove" onclick="removeItem(this)">×</button></div>
+              <div class="canvas-item">Notion <button class="canvas-remove" onclick="removeItem(this)">×</button></div>
+            </div>
+            <div class="canvas-add">
+              <input type="text" placeholder="新增 MCP..." onkeydown="if(event.key==='Enter')addItem(this,'mcp-list')">
+              <button class="canvas-add-btn" onclick="addItem(this.previousElementSibling,'mcp-list')">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="canvas-connections">
+          <h3>🔄 你的工作流串接</h3>
+          <p>把三個欄位的項目串起來，形成你的 AI 工作系統</p>
+          <div class="canvas-flow">
+            <div class="canvas-flow-item" style="background: rgba(212,165,116,0.15);">Project 提供背景</div>
+            <div class="canvas-flow-arrow">→</div>
+            <div class="canvas-flow-item" style="background: rgba(212,118,78,0.15);">Skill 執行流程</div>
+            <div class="canvas-flow-arrow">→</div>
+            <div class="canvas-flow-item" style="background: rgba(74,127,187,0.15);">MCP 連接工具</div>
+          </div>
+          <p style="margin-top: 16px; font-size: 0.85rem;">
+            例：「社群小編」Project 記住品牌語氣 → 「貼文產出器」Skill 一鍵寫文案 → Google Sheets MCP 記錄發文排程
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Who is this for -->
+  <section class="section" id="audience">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="overline">Is This For You?</div>
+        <h2>這堂課適合你嗎？</h2>
+      </div>
+      <div class="audience-grid fade-in">
+        <div class="audience-card yes">
+          <h3>✅ 適合你，如果你是...</h3>
+          <ul>
+            <li>Claude Pro / Max 訂閱者，每天都在用 Claude 工作</li>
+            <li>已經熟悉 Projects 和 Artifacts，想進一步提升效率</li>
+            <li>想把 Claude 從「問答工具」升級成「工作系統」</li>
+            <li>對 MCP、Skill、Extended Thinking 好奇但不知道怎麼開始</li>
+          </ul>
+        </div>
+        <div class="audience-card no">
+          <h3>⏸️ 建議先緩緩，如果你...</h3>
+          <ul>
+            <li>還沒用過 Projects 或 Artifacts（建議先上 A 班）</li>
+            <li>想學純程式開發或 API 串接（請等隱藏班）</li>
+            <li>不確定？先做「<a href="../claude-level-quiz/index.html" style="color: var(--accent); text-decoration: underline;" target="_blank">Claude 使用力等級測驗</a>」，測驗結果在「中階」以上就能跟上</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Instructor -->
+  <section class="section section-alt" id="instructor">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="overline">Instructor</div>
+        <h2>講師介紹</h2>
+      </div>
+      <div class="instructor-card fade-in">
+        <div class="instructor-avatar">V</div>
+        <div>
+          <h3>Lee Vent</h3>
+          <div class="role">vent's talk 主理人 ｜ 放大數位行銷 行銷總監</div>
+          <p>
+            在職行銷總監，每天實際使用 Claude Code + Obsidian 打造個人工作系統。
+            帶領放大知識學院行銷團隊，導入 AI Agent 工作流實現內容自動化產線。
+            A 班 25 位學員參與，課後即時改用自建網站教學——網站本身就是 Claude 能力的最佳示範。
+          </p>
+          <p style="margin-top: 8px;">
+            「我不是教你背指令，是帶你看我怎麼用 AI 建系統。」
+          </p>
+          <div class="instructor-tags">
+            <span class="instructor-tag">SEO 專家</span>
+            <span class="instructor-tag">HR 背景</span>
+            <span class="instructor-tag">Claude Code 重度使用者</span>
+            <span class="instructor-tag">台中在地</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="faq">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="overline">FAQ</div>
+        <h2>常見問題</h2>
+      </div>
+      <div class="faq fade-in">
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            <span>我沒上過 A 班，可以直接報 B 班嗎？</span>
+            <span class="faq-arrow">▾</span>
+          </div>
+          <div class="faq-answer">如果你已經熟悉 Claude 的 Projects、Artifacts 功能，可以直接報名。不確定的話，可以先做「Claude 使用力等級測驗」，看看自己在哪個階段。測驗結果在「中階」以上就能跟上。</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            <span>上課需要付費版 Claude 嗎？</span>
+            <span class="faq-arrow">▾</span>
+          </div>
+          <div class="faq-answer">建議使用 Claude Pro 以上方案。課程中的 MCP 串接和部分進階功能需要 Pro 版。課堂上會先完整示範，你可以之後再決定是否升級。</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            <span>MCP 串接需要寫程式嗎？</span>
+            <span class="faq-arrow">▾</span>
+          </div>
+          <div class="faq-answer">不需要！MCP 的設定是在 Claude 桌面版介面中完成的，課堂上會一步步帶你操作。你只需要有 Google 帳號和 Notion 帳號就好。</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            <span>Skill 和 Projects 有什麼不同？</span>
+            <span class="faq-arrow">▾</span>
+          </div>
+          <div class="faq-answer">Projects 是你的「AI 工作空間」，讓 Claude 記住你的背景和偏好——像一個跟你共事的同事。Skill 是你設計的「AI 工作 SOP」，一個指令就能觸發完整的工作流程——像一份自動化流程表。兩者搭配使用，效果最好。</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            <span>錯過直播怎麼辦？</span>
+            <span class="faq-arrow">▾</span>
+          </div>
+          <div class="faq-answer">會提供課後錄影回放，保留 14 天。這個網站上的互動工具（Skill 設計工坊、MCP 指南、系統畫布）不受時間限制，隨時可以使用。</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            <span>MCP 和 n8n / Zapier 有什麼不同？</span>
+            <span class="faq-arrow">▾</span>
+          </div>
+          <div class="faq-answer">MCP 是 Claude 的「手和眼」，即時互動——你下指令，Claude 當場幫你操作。n8n / Zapier 是排程型自動化，設定好後在背景自動觸發。不是替代關係，是互補：MCP 做臨時決策，n8n 做重複排程。</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            <span>我已經很熟 Claude 了，B 班對我還有幫助嗎？</span>
+            <span class="faq-arrow">▾</span>
+          </div>
+          <div class="faq-answer">如果你已經在用 Claude Code 或 API，B 班能幫你整理 Skill 設計框架、建立 MCP 架構思維，並作為隱藏班（Claude Code 進階班）的前置知識。課程包含 Anthropic 官方設計模式（Red Line Rules、Data Hierarchy），即使是重度使用者也能從系統化框架中獲益。</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            <span>「隱藏班」是什麼？</span>
+            <span class="faq-arrow">▾</span>
+          </div>
+          <div class="faq-answer">隱藏班是這個系列的進階班，專注 Claude Code 開發——讓 AI 直接幫你寫程式、建系統、跑自動化。B 班結業後會開放報名資訊。三堂課的升級路徑：A 班（學會溝通）→ B 班（設計工作流）→ 隱藏班（建造系統）。</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-question">
+            <span>MCP 串接公司資料安全嗎？</span>
+            <span class="faq-arrow">▾</span>
+          </div>
+          <div class="faq-answer">MCP 的權限由你控制——Google Calendar 和 Notion 都是 OAuth 授權，你可以選擇分享哪些日曆或頁面。Claude 不會永久儲存你的資料。課堂上會說明哪些資料適合串接、哪些公司機密資料建議保留不連，以及權限管理的最佳做法。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section section-dark" id="register">
+    <div class="container">
+      <div class="cta-section">
+        <h2>準備好升級你的 Claude 工作流了嗎？</h2>
+        <p>4/9（四）19:00-22:00 ｜ 線上直播 ｜ $500 ｜ 含回放</p>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+          <a href="https://www.accupass.com/go/claude-b-class" class="btn btn-primary" style="font-size: 1.15rem; padding: 18px 48px;" target="_blank" rel="noopener">立即報名 B 班 →</a>
+        </div>
+        <p style="margin-top: 16px; font-size: 0.88rem; opacity: 0.8;">
+          每週重複 10 次的工作，上完這堂課讓 Claude 幫你自動跑。
+        </p>
+        <p style="margin-top: 16px; font-size: 0.85rem; opacity: 0.6;">
+          前置條件：已熟悉 Projects & Artifacts 基本操作（或已上過 A 班）<br>
+          MCP 串接功能需安裝 Claude 桌面版 App（課前會提供安裝指引）<br>
+          報名後如需退款，請於開課 3 天前聯繫主辦單位
+        </p>
+        <p style="margin-top: 16px; font-size: 0.82rem; opacity: 0.5;">
+          想帶團隊一起學？歡迎聯繫 <a href="mailto:vent@leevent.co" style="color: var(--accent-light);">vent@leevent.co</a> 洽詢企業方案
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>Claude 應用講座系列 ｜ A 班（溝通框架）→ B 班（Skill & MCP）→ 隱藏班（Claude Code）</p>
+      <p style="margin-top: 8px;">by Lee Vent · vent's talk · 2026</p>
+    </div>
+  </footer>
+
+  <script>
+    // ── Nav scroll effect ──
+    window.addEventListener('scroll', () => {
+      document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // ── Fade-in on scroll ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // ── Timeline toggle ──
+    function toggleTimeline(el) {
+      el.classList.toggle('open');
+      const toggle = el.querySelector('.timeline-toggle');
+      toggle.textContent = el.classList.contains('open') ? '收起 ▴' : '展開詳情 ▾';
+    }
+
+    // ── FAQ toggle ──
+    function toggleFaq(el) { el.classList.toggle('open'); }
+
+    // ── Maturity toggle ──
+    function toggleMaturity(el) {
+      document.querySelectorAll('.maturity-level').forEach(l => l.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    // ── MCP card toggle ──
+    function toggleMcp(el) { el.classList.toggle('expanded'); }
+
+    // ── Workshop Steps ──
+    function switchStep(n) {
+      document.querySelectorAll('.workshop-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.workshop-step-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('step-' + n).classList.add('active');
+      document.querySelectorAll('.workshop-step-tab')[n].classList.add('active');
+    }
+
+    // ── Generate Skill ──
+    function generateSkill() {
+      const name = document.getElementById('skill-name').value || '未命名 Skill';
+      const trigger = document.getElementById('skill-trigger').value || '（未填寫）';
+      const freq = document.getElementById('skill-freq').value || '按需';
+      const inputReq = document.getElementById('skill-input-required').value || '（未填寫）';
+      const inputOpt = document.getElementById('skill-input-optional').value || '（無）';
+      const process = document.getElementById('skill-process').value || '（未填寫）';
+      const role = document.getElementById('skill-role').value || '專業助理';
+      const output = document.getElementById('skill-output').value || '（未填寫）';
+      const example = document.getElementById('skill-example').value;
+      const quality = document.getElementById('skill-quality').value || '（未填寫）';
+      const redline = document.getElementById('skill-redline').value || '（未填寫）';
+
+      const freqMap = { daily: '每天', weekly: '每週 2-3 次', biweekly: '每兩週一次', monthly: '每月一次' };
+
+      let skillText = `# ${name}\n\n`;
+      skillText += `## 觸發條件\n${trigger}\n使用頻率：${freqMap[freq] || freq}\n\n`;
+      skillText += `## 角色設定\n你是一位${role}。\n\n`;
+      skillText += `## 必要輸入\n${inputReq}\n\n`;
+      skillText += `## 選填輸入\n${inputOpt}\n\n`;
+      skillText += `## 執行流程\n${process}\n\n`;
+      skillText += `## 輸出格式\n${output}\n\n`;
+      if (example) skillText += `## 範例\n${example}\n\n`;
+      skillText += `## 品質標準\n${quality}\n\n`;
+      skillText += `## 紅線規則\n${redline}`;
+
+      document.getElementById('skill-result').innerHTML =
+        `<div class="skill-preview"><button class="copy-btn" onclick="copySkill(this)">📋 複製</button>${escapeHtml(skillText)}</div>` +
+        `<div style="margin-top: 16px; padding: 16px; background: rgba(107,175,123,0.08); border-radius: var(--radius-xs); border-left: 3px solid var(--accent-green);">
+          <div style="font-weight: 700; margin-bottom: 8px; font-size: 0.95rem;">✅ 你的 Skill 已產出！下一步：</div>
+          <div style="font-size: 0.88rem; color: var(--text-sec); line-height: 1.7;">
+            1. 複製上方文字，貼到 Claude Project 的 Custom Instructions 中<br>
+            2. 在對話中輸入觸發條件，測試 Skill 是否如預期運作<br>
+            3. 根據產出品質調整紅線規則和輸出格式<br>
+            4. 課堂上會教你如何把這個 Skill 再進化到 L3（串接 MCP 工具）
+          </div>
+        </div>`;
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function copySkill(btn) {
+      const text = btn.parentElement.textContent.replace('📋 複製', '').trim();
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '✅ 已複製！';
+        setTimeout(() => btn.textContent = '📋 複製', 2000);
+      });
+    }
+
+    // ── Canvas ──
+    function addItem(input, listId) {
+      const val = input.value.trim();
+      if (!val) return;
+      const list = document.getElementById(listId);
+      const item = document.createElement('div');
+      item.className = 'canvas-item';
+      item.innerHTML = `${escapeHtml(val)} <button class="canvas-remove" onclick="removeItem(this)">×</button>`;
+      list.appendChild(item);
+      input.value = '';
+    }
+
+    function removeItem(btn) {
+      btn.parentElement.remove();
+      saveCanvas();
+    }
+
+    // ── Load Marketing Example ──
+    function loadMarketingExample() {
+      document.getElementById('skill-name').value = '社群貼文產出器';
+      document.getElementById('skill-trigger').value = '當我需要為新產品或活動撰寫多平台社群文案時';
+      document.getElementById('skill-freq').value = 'weekly';
+      document.getElementById('skill-input-required').value = '- 產品/活動名稱\n- 目標受眾描述（年齡層、職業、痛點）\n- 核心賣點（3 個以內）';
+      document.getElementById('skill-input-optional').value = '- 品牌語氣參考文件\n- 過去的爆款貼文範例\n- 競品文案截圖';
+      document.getElementById('skill-process').value = 'Step 1：分析目標受眾的痛點與需求\nStep 2：提煉 3 個核心訊息角度\nStep 3：撰寫 Threads 版本（300 字內，含 CTA）\nStep 4：改寫為 Facebook 版本（加入連結和 Hashtag）\nStep 5：產出 Instagram 圖文版本（重點條列）';
+      document.getElementById('skill-role').value = '資深社群行銷經理，擅長中文口語化文案，了解台灣社群生態';
+      document.getElementById('skill-output').value = '## [平台名稱] 版本\n\n[文案內容]\n\n---\n每個版本包含：主文案、CTA、建議發布時間、Hashtag（3-5 個）';
+      document.getElementById('skill-example').value = '';
+      document.getElementById('skill-quality').value = '- 每篇文案必須包含至少一個 CTA\n- 語氣親切口語化，不要文言文或公文體\n- 字數控制在平台建議範圍內';
+      document.getElementById('skill-redline').value = '❌ 不要使用「親愛的」「您好」等制式開頭\n❌ 不要一次講超過 3 個賣點\n❌ 不要使用競品的品牌名稱\n❌ 不要出現未經驗證的數據';
+      switchStep(0);
+    }
+
+    // ── Canvas localStorage ──
+    function saveCanvas() {
+      const data = {};
+      ['projects-list', 'skills-list', 'mcp-list'].forEach(id => {
+        const items = document.getElementById(id).querySelectorAll('.canvas-item');
+        data[id] = Array.from(items).map(el => el.textContent.replace('×', '').trim());
+      });
+      localStorage.setItem('b-class-canvas', JSON.stringify(data));
+    }
+
+    function loadCanvas() {
+      try {
+        const data = JSON.parse(localStorage.getItem('b-class-canvas'));
+        if (!data) return;
+        ['projects-list', 'skills-list', 'mcp-list'].forEach(id => {
+          if (!data[id]) return;
+          const list = document.getElementById(id);
+          list.innerHTML = '';
+          data[id].forEach(val => {
+            const item = document.createElement('div');
+            item.className = 'canvas-item';
+            item.innerHTML = `${escapeHtml(val)} <button class="canvas-remove" onclick="removeItem(this)">×</button>`;
+            list.appendChild(item);
+          });
+        });
+      } catch(e) {}
+    }
+
+    // Override addItem to also save
+    const _origAddItem = addItem;
+    function addItem(input, listId) {
+      const val = input.value.trim();
+      if (!val) return;
+      const list = document.getElementById(listId);
+      const item = document.createElement('div');
+      item.className = 'canvas-item';
+      item.innerHTML = `${escapeHtml(val)} <button class="canvas-remove" onclick="removeItem(this)">×</button>`;
+      list.appendChild(item);
+      input.value = '';
+      saveCanvas();
+    }
+
+    // Load saved canvas on page load
+    loadCanvas();
+  </script>
+</body>
+</html>

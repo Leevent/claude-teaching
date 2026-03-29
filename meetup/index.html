@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude 台中小聚 — AI 使用者線下交流社群</title>
+  <meta name="description" content="台中第一個 Claude 使用者線下社群。帶著筆電、帶著問題來，帶著解法和朋友走。台中定期舉辦。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0F0E17;
+      --bg-card: #1A1927;
+      --bg-card-hover: #222136;
+      --bg-light: #FFF8F0;
+      --accent: #FF8906;
+      --accent-light: #FFAB40;
+      --accent-glow: rgba(255, 137, 6, 0.15);
+      --accent-purple: #A78BFA;
+      --accent-blue: #60A5FA;
+      --accent-green: #6EE7B7;
+      --text: #FFFFFE;
+      --text-sec: #A7A9BE;
+      --text-muted: #6B6D80;
+      --border: #2A293E;
+      --border-light: #3A394E;
+      --shadow: rgba(0, 0, 0, 0.3);
+      --radius: 16px;
+      --radius-sm: 12px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      font-family: 'Noto Sans TC', 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── Navigation ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(15, 14, 23, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1080px; margin: 0 auto;
+      padding: 14px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand {
+      font-weight: 900; font-size: 1rem; color: var(--accent);
+      text-decoration: none; display: flex; align-items: center; gap: 10px;
+      letter-spacing: 0.5px;
+    }
+    .nav-links { display: flex; gap: 4px; align-items: center; }
+    .nav-links a {
+      color: var(--text-sec); text-decoration: none; font-size: 0.85rem;
+      padding: 8px 14px; border-radius: 8px; transition: var(--transition);
+      font-weight: 500;
+    }
+    .nav-links a:hover { color: var(--text); background: var(--bg-card); }
+    .nav-cta {
+      background: var(--accent) !important; color: var(--bg) !important;
+      border-radius: 999px !important; font-weight: 700 !important;
+      padding: 8px 22px !important;
+    }
+    .nav-cta:hover { background: var(--accent-light) !important; transform: translateY(-1px); }
+    .nav-mobile-toggle { display: none; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text); }
+
+    /* ── Container & Section ── */
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+    .section { padding: 80px 0; }
+    .section-light { background: var(--bg-light); color: #2D2016; }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      text-align: center; position: relative; overflow: hidden;
+      padding: 120px 24px 80px;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 600px 400px at 30% 20%, rgba(255,137,6,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 500px 500px at 70% 80%, rgba(167,139,250,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 400px 300px at 50% 50%, rgba(96,165,250,0.06) 0%, transparent 60%);
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 720px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--accent-glow); color: var(--accent);
+      padding: 8px 20px; border-radius: 999px; font-size: 0.85rem; font-weight: 700;
+      margin-bottom: 28px; border: 1px solid rgba(255,137,6,0.2);
+    }
+    .hero-badge .pulse {
+      width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+      animation: pulse 2s infinite;
+    }
+    .hero h1 {
+      font-size: 3.2rem; font-weight: 900; line-height: 1.25;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #FFFFFE 0%, #FFD8A8 50%, #FF8906 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero .subtitle {
+      font-size: 1.2rem; color: var(--text-sec); margin-bottom: 40px; line-height: 1.8;
+    }
+    .hero-stats {
+      display: flex; justify-content: center; gap: 40px; margin-bottom: 40px;
+    }
+    .hero-stat { text-align: center; }
+    .hero-stat .num {
+      font-size: 2rem; font-weight: 900; color: var(--accent);
+      display: block; line-height: 1.2;
+    }
+    .hero-stat .label { font-size: 0.85rem; color: var(--text-muted); }
+    .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      border: none; border-radius: 999px; font-family: inherit; cursor: pointer;
+      font-weight: 700; transition: var(--transition); text-decoration: none;
+    }
+    .btn-primary {
+      background: var(--accent); color: var(--bg);
+      padding: 16px 40px; font-size: 1.1rem;
+      box-shadow: 0 4px 24px rgba(255,137,6,0.3);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(255,137,6,0.4); background: var(--accent-light); }
+    .btn-secondary {
+      background: transparent; color: var(--text);
+      padding: 14px 32px; font-size: 1rem;
+      border: 2px solid var(--border-light);
+    }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ── Section Headers ── */
+    .section-header { text-align: center; margin-bottom: 48px; }
+    .section-header .overline {
+      font-size: 0.8rem; font-weight: 700; color: var(--accent);
+      text-transform: uppercase; letter-spacing: 3px; margin-bottom: 12px;
+    }
+    .section-header h2 { font-size: 2rem; font-weight: 900; line-height: 1.4; margin-bottom: 12px; }
+    .section-header p { font-size: 1.05rem; color: var(--text-sec); max-width: 580px; margin: 0 auto; }
+    .section-light .section-header .overline { color: #D4764E; }
+    .section-light .section-header p { color: #6B5B4E; }
+
+    /* ── What Is This ── */
+    .values-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .value-card {
+      background: var(--bg-card); border-radius: var(--radius); padding: 24px;
+      border: 1px solid var(--border); transition: var(--transition);
+      text-align: center;
+    }
+    .value-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 8px 24px var(--shadow); }
+    .value-icon { font-size: 2rem; margin-bottom: 12px; display: block; }
+    .value-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .value-card p { font-size: 0.85rem; color: var(--text-sec); line-height: 1.6; }
+
+    /* ── Showcase ── */
+    .showcase-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .showcase-card {
+      background: var(--bg-card); border-radius: var(--radius); padding: 24px;
+      border: 1px solid var(--border); transition: var(--transition);
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .showcase-card:hover { border-color: var(--accent-purple); }
+    .showcase-num {
+      width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 0.85rem;
+    }
+    .showcase-card:nth-child(1) .showcase-num { background: rgba(255,137,6,0.15); color: var(--accent); }
+    .showcase-card:nth-child(2) .showcase-num { background: rgba(167,139,250,0.15); color: var(--accent-purple); }
+    .showcase-card:nth-child(3) .showcase-num { background: rgba(96,165,250,0.15); color: var(--accent-blue); }
+    .showcase-card:nth-child(4) .showcase-num { background: rgba(110,231,183,0.15); color: var(--accent-green); }
+    .showcase-card:nth-child(5) .showcase-num { background: rgba(255,171,64,0.15); color: var(--accent-light); }
+    .showcase-card:nth-child(6) .showcase-num { background: rgba(167,139,250,0.15); color: var(--accent-purple); }
+    .showcase-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+    .showcase-card p { font-size: 0.85rem; color: var(--text-sec); }
+    .showcase-tag {
+      display: inline-block; font-size: 0.7rem; padding: 2px 8px;
+      border-radius: 999px; margin-top: 6px; font-weight: 500;
+    }
+    .tag-easy { background: rgba(110,231,183,0.15); color: var(--accent-green); }
+    .tag-medium { background: rgba(255,171,64,0.15); color: var(--accent-light); }
+    .tag-high { background: rgba(255,137,6,0.2); color: var(--accent); }
+
+    /* ── Event Flow ── */
+    .flow-timeline { max-width: 640px; margin: 0 auto; }
+    .flow-item {
+      display: grid; grid-template-columns: 100px 1fr; gap: 20px;
+      padding: 16px 0; border-bottom: 1px solid var(--border);
+    }
+    .flow-item:last-child { border-bottom: none; }
+    .flow-time { font-size: 0.9rem; font-weight: 700; color: var(--accent); padding-top: 2px; }
+    .flow-content h3 { font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
+    .flow-content p { font-size: 0.88rem; color: var(--text-sec); }
+
+    /* ── First Event Recap ── */
+    .recap-card {
+      background: var(--bg-card); border-radius: var(--radius); padding: 40px;
+      border: 1px solid var(--border); max-width: 720px; margin: 0 auto;
+    }
+    .recap-card h3 { font-size: 1.2rem; font-weight: 900; margin-bottom: 24px; text-align: center; color: var(--accent); }
+    .recap-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 28px; }
+    .recap-stat { text-align: center; }
+    .recap-stat .num { font-size: 2rem; font-weight: 900; color: var(--text); display: block; }
+    .recap-stat .label { font-size: 0.85rem; color: var(--text-muted); }
+    .recap-quote {
+      padding: 20px 24px; border-left: 3px solid var(--accent);
+      background: rgba(255,137,6,0.05); border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 0.95rem; color: var(--text-sec); line-height: 1.7;
+      font-style: italic;
+    }
+
+    /* ── Event Info ── */
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 720px; margin: 0 auto; }
+    .info-card {
+      background: var(--bg-card); border-radius: var(--radius); padding: 24px;
+      border: 1px solid var(--border);
+    }
+    .info-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .info-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+    .info-item:last-child { border-bottom: none; }
+    .info-label { color: var(--text-muted); }
+    .info-value { font-weight: 500; }
+
+    /* ── FAQ (reuse) ── */
+    .faq { max-width: 720px; margin: 0 auto; }
+    .faq-item { border-bottom: 1px solid var(--border); padding: 20px 0; cursor: pointer; }
+    .faq-question {
+      display: flex; justify-content: space-between; align-items: center;
+      font-weight: 700; font-size: 1rem;
+    }
+    .faq-arrow { transition: transform 0.3s ease; font-size: 1.2rem; color: var(--text-muted); }
+    .faq-item.open .faq-arrow { transform: rotate(180deg); }
+    .faq-answer {
+      max-height: 0; overflow: hidden; transition: max-height 0.4s ease;
+      font-size: 0.95rem; color: var(--text-sec); line-height: 1.7;
+    }
+    .faq-item.open .faq-answer { max-height: 300px; padding-top: 12px; }
+    .section-light .faq-item { border-color: #E8DDD4; }
+    .section-light .faq-question { color: #2D2016; }
+    .section-light .faq-answer { color: #6B5B4E; }
+
+    /* ── CTA ── */
+    .cta-section {
+      text-align: center; padding: 100px 24px;
+      background:
+        radial-gradient(ellipse 500px 300px at 50% 50%, rgba(255,137,6,0.12) 0%, transparent 70%);
+    }
+    .cta-section h2 { font-size: 2.2rem; font-weight: 900; margin-bottom: 16px; }
+    .cta-section p { font-size: 1.1rem; color: var(--text-sec); margin-bottom: 36px; }
+
+    /* ── Footer ── */
+    .footer {
+      padding: 32px 0; text-align: center;
+      font-size: 0.85rem; color: var(--text-muted);
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Animations ── */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.5); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2rem; }
+      .hero-stats { gap: 24px; }
+      .hero-stat .num { font-size: 1.5rem; }
+      .values-grid { grid-template-columns: repeat(2, 1fr); }
+      .showcase-grid { grid-template-columns: 1fr; }
+      .info-grid { grid-template-columns: 1fr; }
+      .recap-stats { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+      .recap-stat .num { font-size: 1.5rem; }
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex; flex-direction: column; position: absolute;
+        top: 100%; left: 0; right: 0; background: var(--bg);
+        padding: 16px; border-bottom: 1px solid var(--border);
+      }
+      .nav-mobile-toggle { display: block; }
+    }
+    @media (max-width: 480px) {
+      .values-grid { grid-template-columns: 1fr; }
+      .section { padding: 60px 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#" class="nav-brand">⚡ Claude 台中小聚</a>
+      <button class="nav-mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
+      <div class="nav-links">
+        <a href="#about">關於小聚</a>
+        <a href="#showcase">Showcase</a>
+        <a href="#flow">活動流程</a>
+        <a href="#recap">首場預告</a>
+        <a href="#faq">FAQ</a>
+        <a href="#register" class="nav-cta">登記下一場</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="pulse"></span>
+        4/2 首場完售 — 第二場籌備中
+      </div>
+      <h1>Claude 台中小聚</h1>
+      <p class="subtitle">
+        帶著筆電、帶著問題來，帶著解法和朋友走。<br>
+        台中第一個 Claude 使用者線下交流社群。
+      </p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="num">4/2</span>
+          <span class="label">首場日期</span>
+        </div>
+        <div class="hero-stat">
+          <span class="num">32</span>
+          <span class="label">已售票數</span>
+        </div>
+        <div class="hero-stat">
+          <span class="num">2hr+</span>
+          <span class="label">深度交流</span>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <a href="#recap" class="btn btn-primary">看首場內容 →</a>
+        <a href="#register" class="btn btn-secondary">登記下一場</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- What Is This -->
+  <section class="section" id="about">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="overline">Why This Meetup</div>
+        <h2>不是演講，是一場邊聊邊做的實戰交流</h2>
+        <p>台灣的 Claude 使用者正在快速成長，但一直缺少一個線下交流的場域。這裡就是。</p>
+      </div>
+      <div class="values-grid fade-in">
+        <div class="value-card">
+          <span class="value-icon">🤝</span>
+          <h3>認識同城用戶</h3>
+          <p>找到台中在地的 Claude 同好，建立真實連結</p>
+        </div>
+        <div class="value-card">
+          <span class="value-icon">👀</span>
+          <h3>看真實工作流</h3>
+          <p>現場展示真人每天在用的 Claude 系統，不是理論課</p>
+        </div>
+        <div class="value-card">
+          <span class="value-icon">🎯</span>
+          <h3>帶問題來解</h3>
+          <p>帶著你的具體問題來，現場找答案、找靈感</p>
+        </div>
+        <div class="value-card">
+          <span class="value-icon">🌱</span>
+          <h3>社群種子</h3>
+          <p>每一場都在建立台中 Claude 社群的根基</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Showcase -->
+  <section class="section" id="showcase" style="padding-top: 0;">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="overline">Live Demo Showcase</div>
+        <h2>現場你會看到什麼？</h2>
+        <p>不是投影片教學，是打開螢幕直接跑給你看</p>
+      </div>
+      <div class="showcase-grid fade-in">
+        <div class="showcase-card">
+          <div class="showcase-num">1</div>
+          <div>
+            <h3>個人 AI 作業系統</h3>
+            <p>一個指令啟動工作日：行程、任務、筆記、記帳全自動同步</p>
+            <span class="showcase-tag tag-high">衝擊力極高</span>
+          </div>
+        </div>
+        <div class="showcase-card">
+          <div class="showcase-num">2</div>
+          <div>
+            <h3>專案管理系統 Live Demo</h3>
+            <p>用 Claude 搭建的專案追蹤、進度管理與團隊協作系統</p>
+            <span class="showcase-tag tag-high">衝擊力極高</span>
+          </div>
+        </div>
+        <div class="showcase-card">
+          <div class="showcase-num">3</div>
+          <div>
+            <h3>企業運營 Prompt（Notion）</h3>
+            <p>把公司 SOP 灌進 Notion × Claude，讓 AI 按你的規矩做事</p>
+            <span class="showcase-tag tag-high">衝擊力極高</span>
+          </div>
+        </div>
+        <div class="showcase-card">
+          <div class="showcase-num">4</div>
+          <div>
+            <h3>Skill 設計概念與實作</h3>
+            <p>把重複工作封裝成可一鍵執行的 AI 工作流，不寫程式也能做到</p>
+            <span class="showcase-tag tag-medium">核心概念</span>
+          </div>
+        </div>
+        <div class="showcase-card">
+          <div class="showcase-num">5</div>
+          <div>
+            <h3>YouTube → 結構化筆記</h3>
+            <p>30 秒內把一支影片變成可搜尋的知識筆記</p>
+            <span class="showcase-tag tag-medium">實戰展示</span>
+          </div>
+        </div>
+        <div class="showcase-card">
+          <div class="showcase-num">6</div>
+          <div>
+            <h3>AI 社群自動發文</h3>
+            <p>寫完自動發到 Threads / Facebook，零人工操作</p>
+            <span class="showcase-tag tag-medium">進階展示</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Event Flow -->
+  <section class="section" id="flow" style="background: var(--bg-card);">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="overline">Event Flow</div>
+        <h2>活動流程</h2>
+        <p>2 小時，從入場到散場</p>
+      </div>
+      <div class="flow-timeline fade-in">
+        <div class="flow-item">
+          <div class="flow-time">19:00</div>
+          <div class="flow-content">
+            <h3>開放入場</h3>
+            <p>找位子、自由交流、提前認識新朋友</p>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-time">19:30</div>
+          <div class="flow-content">
+            <h3>破冰自介</h3>
+            <p>每人 30 秒：你用 Claude 做過最酷的一件事是什麼？</p>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-time">19:40</div>
+          <div class="flow-content">
+            <h3>主題分享 — Claude 工作流實戰</h3>
+            <p>60 分鐘螢幕投影，展示真實每天在用的 AI 工作系統</p>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-time">20:40</div>
+          <div class="flow-content">
+            <h3>互動 Q&A</h3>
+            <p>開放提問、經驗交換、現場實作解題</p>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="flow-time">21:00</div>
+          <div class="flow-content">
+            <h3>自由交流 + 大合照</h3>
+            <p>深度對談、交換聯繫方式、建立社群連結</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- First Event — Coming Soon -->
+  <section class="section" id="recap">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="overline">First Meetup — Coming Soon</div>
+        <h2>首場小聚 — 2026/04/02（四）</h2>
+        <p>32 張票已全數售出，台中第一場 Claude 使用者聚會即將登場</p>
+      </div>
+      <div class="recap-card fade-in">
+        <h3>🔥 首場預告</h3>
+        <div class="recap-stats">
+          <div class="recap-stat">
+            <span class="num">32</span>
+            <span class="label">已售票數</span>
+          </div>
+          <div class="recap-stat">
+            <span class="num">SOLD OUT</span>
+            <span class="label" style="font-size: 0.75rem;">本場已完售</span>
+          </div>
+          <div class="recap-stat">
+            <span class="num">19:00</span>
+            <span class="label">入場時間</span>
+          </div>
+        </div>
+        <div class="recap-quote" style="font-style: normal;">
+          這次分享將聚焦在三個主題：<br><br>
+          ① 個人 AI 作業系統 — 如何用 Claude 管理每天的行程、任務、筆記<br>
+          ② 專案管理系統 — 從個人到團隊的 AI 協作流程<br>
+          ③ 企業運營 Prompt × Notion — 把公司 SOP 變成 AI 可執行的工作流<br><br>
+          另外也會分享 Skill 的概念，讓你知道怎麼把重複工作「封裝」起來。
+        </div>
+        <p style="text-align: center; margin-top: 16px; font-size: 0.88rem; color: var(--accent);">
+          活動結束後，這裡會更新為完整回顧 + 參加者回饋
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Event Info -->
+  <section class="section" id="info" style="background: var(--bg-card);">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="overline">Event Info</div>
+        <h2>活動資訊</h2>
+      </div>
+      <div class="info-grid fade-in">
+        <div class="info-card">
+          <h3>📋 基本資訊</h3>
+          <div class="info-item"><span class="info-label">活動</span><span class="info-value">Claude 台中小聚</span></div>
+          <div class="info-item"><span class="info-label">定位</span><span class="info-value">使用者線下交流</span></div>
+          <div class="info-item"><span class="info-label">首場</span><span class="info-value">2026/04/02（四）19:00（已完售）</span></div>
+          <div class="info-item"><span class="info-label">頻率</span><span class="info-value">社群優先，定期舉辦</span></div>
+          <div class="info-item"><span class="info-label">票價</span><span class="info-value">$600（早鳥 / 社群折扣碼 $500）</span></div>
+          <div class="info-item"><span class="info-label">人數</span><span class="info-value">每場 10-30 人（首場 32 人完售）</span></div>
+          <div class="info-item"><span class="info-label">主辦</span><span class="info-value">Lee Vent｜放大數位行銷 行銷總監</span></div>
+        </div>
+        <div class="info-card">
+          <h3>📍 場地與準備</h3>
+          <div class="info-item"><span class="info-label">場地</span><span class="info-value">台中 涵軒雅敘共享中心</span></div>
+          <div class="info-item"><span class="info-label">時間</span><span class="info-value">19:00 - 21:30</span></div>
+          <div class="info-item"><span class="info-label">攜帶</span><span class="info-value">筆電 + 手機（建議）</span></div>
+          <div class="info-item"><span class="info-label">報名</span><span class="info-value">Accupass + Portaly</span></div>
+          <div class="info-item"><span class="info-label">錄影</span><span class="info-value">僅拍照，不錄影</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Target Audience -->
+  <section class="section" id="audience">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="overline">Who Should Come</div>
+        <h2>什麼人適合來？</h2>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 720px; margin: 0 auto;" class="fade-in">
+        <div class="value-card">
+          <span class="value-icon">🌱</span>
+          <h3>入門探索者 40%</h3>
+          <p>剛開始用 Claude，想知道別人怎麼用、怎麼把它融入工作</p>
+        </div>
+        <div class="value-card">
+          <span class="value-icon">⚡</span>
+          <h3>進階用戶 40%</h3>
+          <p>天天用 Claude Code / Pro，想交流進階技巧和工作流</p>
+        </div>
+        <div class="value-card">
+          <span class="value-icon">🔥</span>
+          <h3>跨界探路者 20%</h3>
+          <p>還沒開始用但想親眼看看 AI 能幹嘛，來一次就知道</p>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 24px;" class="fade-in">
+        <p style="font-size: 0.88rem; color: var(--text-sec);">
+          過去參加者職業：<span style="color: var(--accent);">行銷企劃</span> · <span style="color: var(--accent-purple);">社群小編</span> · <span style="color: var(--accent-blue);">創業者</span> · <span style="color: var(--accent-green);">PM</span> · <span style="color: var(--accent-light);">設計師</span> · <span style="color: var(--accent-purple);">工程師</span> · <span style="color: var(--accent-blue);">花店老闆</span> · <span style="color: var(--accent-green);">自由工作者</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="faq" style="background: var(--bg-card);">
+    <div class="container">
+      <div class="section-header fade-in">
+        <div class="overline">FAQ</div>
+        <h2>常見問題</h2>
+      </div>
+      <div class="faq fade-in">
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-question">
+            <span>我是 Claude 初學者，適合來嗎？</span>
+            <span class="faq-arrow">▾</span>
+          </div>
+          <div class="faq-answer">非常適合！小聚的參加者約 40% 是入門者。你可以看到別人的真實工作流，這比任何教學影片都有啟發。帶著你的筆電和問題來就對了。</div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-question">
+            <span>需要自備什麼？</span>
+            <span class="faq-arrow">▾</span>
+          </div>
+          <div class="faq-answer">建議攜帶筆電和手機。現場會有 WiFi 和電源。如果想跟著操作或展示自己的工作流，筆電必備。</div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-question">
+            <span>活動會錄影嗎？</span>
+            <span class="faq-arrow">▾</span>
+          </div>
+          <div class="faq-answer">不錄影，僅拍照作為活動紀錄。這是為了營造輕鬆自在的交流氛圍，讓大家放心分享。</div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-question">
+            <span>和 Claude 線上講座有什麼不同？</span>
+            <span class="faq-arrow">▾</span>
+          </div>
+          <div class="faq-answer">線上講座（A 班、B 班）是系統化的課程教學，有完整教案和作業。小聚是社群交流活動，重點在面對面互動、經驗分享和人脈建立。兩者互補，建議都參加。</div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-question">
+            <span>之後還會辦嗎？</span>
+            <span class="faq-arrow">▾</span>
+          </div>
+          <div class="faq-answer">會！目標是建立台中 Claude 社群，定期舉辦（至少每季一場，目標月聚）。首場已成功驗證需求，後續會邀請更多講者分享。</div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-question">
+            <span>場地在哪裡？怎麼到？</span>
+            <span class="faq-arrow">▾</span>
+          </div>
+          <div class="faq-answer">台中涵軒雅敘共享中心。報名後會收到詳細地址、停車資訊和交通指南。建議提早 10 分鐘到場，可以先認識其他參加者。</div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-question">
+            <span>我已經用 Claude 很熟了，還值得來嗎？</span>
+            <span class="faq-arrow">▾</span>
+          </div>
+          <div class="faq-answer">絕對值得。首場有 40% 是進階用戶，不少人用 Claude Code 做自動化。小聚最大的價值不是「學」，是看到別人怎麼把 Claude 用在你沒想過的場景。而且進階用戶的分享對新手幫助最大，你的參與本身就是社群價值。</div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-question">
+            <span>我不是工程師，展示的 Claude Code 我看得懂嗎？</span>
+            <span class="faq-arrow">▾</span>
+          </div>
+          <div class="faq-answer">看得懂！展示的重點是「這能幫你做什麼」而不是「程式碼怎麼寫」。首場有花店老闆、行銷企劃、設計師，大家都看得很投入。Claude Code 的操作其實就是打字下指令，跟用 ChatGPT 差不多直覺。</div>
+        </div>
+        <div class="faq-item" onclick="this.classList.toggle('open')">
+          <div class="faq-question">
+            <span>可以帶同事 / 朋友一起來嗎？</span>
+            <span class="faq-arrow">▾</span>
+          </div>
+          <div class="faq-answer">歡迎！3 人以上團報可以私訊洽詢優惠。帶團隊一起來最棒的地方是：回去之後有人可以一起討論怎麼實際導入工作。聯繫方式：<a href="mailto:vent@leevent.co" style="color: #FF8906;">vent@leevent.co</a></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section" id="register">
+    <div class="container">
+      <h2>4/2 首場已完售 🔥</h2>
+      <p style="margin-bottom: 12px;">錯過這場沒關係，留下 Email 搶下一場。</p>
+      <div style="display: inline-block; background: var(--bg-card); border: 1px solid var(--accent); border-radius: var(--radius-sm); padding: 12px 24px; margin-bottom: 28px;">
+        <span style="color: var(--accent); font-weight: 700;">📅 第二場籌備中</span>
+        <span style="color: var(--text-sec); font-size: 0.9rem;"> — 搶先登記，優先通知</span>
+      </div>
+      <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+        <a href="mailto:vent@leevent.co?subject=Claude%20台中小聚%20-%20我想報名下一場&body=Hi%20Vent，我想參加下一場%20Claude%20台中小聚，請通知我報名資訊！" class="btn btn-primary" style="font-size: 1.15rem; padding: 18px 48px;">登記候補 / 通知我 →</a>
+      </div>
+      <p style="margin-top: 20px; font-size: 0.88rem; color: var(--text-sec);">
+        首場 5 天內完售，第二場預計開放更多名額。
+      </p>
+      <p style="margin-top: 16px; font-size: 0.85rem; color: var(--text-muted);">
+        3 人以上團報可私訊洽詢優惠 ｜ <a href="mailto:vent@leevent.co" style="color: var(--accent);">vent@leevent.co</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>Claude 台中小聚 ｜ 台中第一個 Claude 使用者線下社群</p>
+      <p style="margin-top: 8px;">by Lee Vent · vent's talk · 2026</p>
+      <p style="margin-top: 12px; font-size: 0.8rem;">
+        想更系統地學 Claude？看看
+        <a href="../../b-class-website/index.html" style="color: var(--accent); text-decoration: underline;" target="_blank">Claude 進階課程（B 班）</a>
+        ，3 小時帶你建置 Skill + MCP 自動化工作流。
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Fade-in on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
