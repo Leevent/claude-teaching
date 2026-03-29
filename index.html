@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude 教學專案｜Lee Vent</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0F0E17; color: #FFFFFE;
+      min-height: 100dvh; display: flex; justify-content: center; padding: 48px 16px;
+    }
+    .container { max-width: 560px; width: 100%; }
+    h1 { font-size: 1.6rem; font-weight: 900; margin-bottom: 8px; text-align: center; }
+    .sub { color: #B8B5C8; text-align: center; margin-bottom: 40px; font-size: 0.95rem; }
+    .card {
+      display: block; background: #1A1929; border: 2px solid #2E2B3F;
+      border-radius: 16px; padding: 24px; margin-bottom: 16px;
+      text-decoration: none; color: #FFFFFE;
+      transition: border-color .2s, transform .15s;
+    }
+    .card:hover { border-color: #FF8906; transform: translateY(-2px); }
+    .card h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+    .card p { font-size: 0.88rem; color: #B8B5C8; line-height: 1.5; }
+    .badge {
+      display: inline-block; font-size: 0.72rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 99px; margin-bottom: 8px;
+    }
+    .badge-orange { background: rgba(255,137,6,.15); color: #FF8906; }
+    .badge-blue { background: rgba(126,173,210,.15); color: #7EADD2; }
+    .badge-green { background: rgba(107,175,123,.15); color: #6BAF7B; }
+    .footer { text-align: center; margin-top: 32px; font-size: 0.78rem; color: #6B6882; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Claude 教學專案</h1>
+    <p class="sub">Lee Vent｜放大數位行銷 行銷總監</p>
+    <a class="card" href="./meetup/">
+      <span class="badge badge-orange">台中小聚</span>
+      <h2>Claude 台中使用者小聚</h2>
+      <p>台中第一個 Claude 使用者線下交流社群。首場 4/2 已完售。</p>
+    </a>
+    <a class="card" href="./meetup-quiz/">
+      <span class="badge badge-green">前測評估</span>
+      <h2>你是 Claude 幾段高手？</h2>
+      <p>15 題情境測驗，7 級段位評估。找出你的 AI 協作段位。</p>
+    </a>
+    <a class="card" href="./b-class/">
+      <span class="badge badge-blue">線上課程</span>
+      <h2>B 班｜Skill 與跨平台 MCP 實踐</h2>
+      <p>進階 Claude 應用：Skill 設計、MCP 串接、自動化工作流。</p>
+    </a>
+    <a class="card" href="./level-quiz/">
+      <span class="badge badge-green">能力評估</span>
+      <h2>Claude 使用力等級測驗</h2>
+      <p>15 題測驗，三等級評估你的 Claude 使用程度。</p>
+    </a>
+    <p class="footer">放大知識學院 × vent's talk</p>
+  </div>
+</body>
+</html>
